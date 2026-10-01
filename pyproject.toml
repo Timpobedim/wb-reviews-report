@@ -1,0 +1,55 @@
+[project]
+name = "wb-reviews-report"
+version = "1.0.0"
+description = "Отзывы конкурентов на Wildberries → отчёт в Excel: рейтинг, тренд негатива, жалобы, посадка, ответы продавца"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "requests>=2.32",
+    "openpyxl>=3.1",
+]
+
+[project.scripts]
+wb-reviews = "wb_reviews.cli:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4",
+    "responses>=0.25",
+    "ruff>=0.12",
+    "mypy>=1.17",
+    "types-requests>=2.32",
+    "types-openpyxl>=3.1",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/wb_reviews"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "S", "C4", "SIM", "PT", "RUF", "DTZ"]
+# RUF001-003: в русских строках есть кириллица, похожая на латиницу, — это нормально.
+ignore = ["RUF001", "RUF002", "RUF003"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S311"]
+"src/wb_reviews/demo.py" = ["S311"]  # синтетические данные, не криптография
+
+[tool.ruff.lint.isort]
+known-first-party = ["wb_reviews"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["src"]
